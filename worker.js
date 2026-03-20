@@ -1,12 +1,11 @@
 /**
- * 포쿨 광고 대시보드 — Cloudflare Worker v2
- * - HMAC-SHA256 서명 + CORS 프록시
- * - 날짜 파라미터 지원 (최대 1년)
- * - Claude AI 프록시 (API 키 서버 보관)
- * - CORS 보안: GitHub Pages 도메인만 허용
+ * 포쿨 광고 대시보드 — Cloudflare Worker v2.1
+ * - 캠페인 타입별 배치 호출 (subrequest 50개 제한 대응)
+ * - /api/dashboard: KPI + 캠페인 테이블
+ * - /api/daily?date=X: 일별 집계 (대시보드에서 날짜별 호출)
+ * - /api/ai: Claude API 프록시
  *
- * 환경변수 (wrangler secret put):
- *   NAVER_API_KEY, NAVER_SECRET, NAVER_CUSTOMER_ID, CLAUDE_API_KEY
+ * Secrets: NAVER_API_KEY, NAVER_SECRET, NAVER_CUSTOMER_ID, CLAUDE_API_KEY
  */
 
 const NAVER_BASE = 'https://api.searchad.naver.com';
@@ -18,28 +17,27 @@ const ALLOWED_ORIGINS = [
   'http://localhost:8080',
   'http://localhost:3000',
 ];
-const MAX_DAILY_DAYS = 31;
-const BATCH_SIZE = 20;
+const BATCH_IDS = 20; // max campaign IDs per stats call
 
-// ── AI Rate Limit (in-memory, resets on Worker restart) ──
+// ── AI Rate Limit ──
 const aiRateMap = new Map();
-const AI_RATE_LIMIT = 20; // max calls per hour
-const AI_RATE_WINDOW = 3600000; // 1 hour in ms
+const AI_RATE_LIMIT = 20;
+const AI_RATE_WINDOW = 3600000;
 
-// ── HMAC-SHA256 서명 ──
-async function sign(secret, timestamp, method, path) {
-  const msg = `${timestamp}.${method}.${path}`;
+// ── HMAC-SHA256 ──
+async function sign(secret, ts, method, path) {
   const key = await crypto.subtle.importKey(
     'raw', new TextEncoder().encode(secret),
     { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
   );
-  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(msg));
+  const sig = await crypto.subtle.sign('HMAC', key,
+    new TextEncoder().encode(`${ts}.${method}.${path}`));
   return btoa(String.fromCharCode(...new Uint8Array(sig)));
 }
 
 // ── CORS ──
-function getCorsHeaders(request) {
-  const origin = request.headers.get('Origin') || '';
+function getCorsHeaders(req) {
+  const origin = req.headers.get('Origin') || '';
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
     'Access-Control-Allow-Origin': allowed,
@@ -50,89 +48,89 @@ function getCorsHeaders(request) {
   };
 }
 
-function jsonResponse(data, status, request) {
-  return new Response(JSON.stringify(data), { status: status || 200, headers: getCorsHeaders(request) });
+function json(data, status, req) {
+  return new Response(JSON.stringify(data), { status: status || 200, headers: getCorsHeaders(req) });
 }
 
-// ── Origin 검증 ──
-function isOriginAllowed(request) {
-  const origin = request.headers.get('Origin') || '';
-  const referer = request.headers.get('Referer') || '';
-  // Allow: valid origin, or no origin (direct curl/server calls for health)
-  if (!origin && !referer) return true; // direct API call (curl, server)
+function isOriginAllowed(req) {
+  const origin = req.headers.get('Origin') || '';
+  const referer = req.headers.get('Referer') || '';
+  if (!origin && !referer) return true;
   return ALLOWED_ORIGINS.some(o => origin.startsWith(o) || referer.startsWith(o));
 }
 
-// ── Naver API 호출 ──
-async function naverFetch(env, method, path) {
+// ── Naver API: 캠페인 목록 ──
+async function getCampaigns(env) {
   const ts = String(Date.now());
-  const signature = await sign(env.NAVER_SECRET, ts, method, path);
-  const res = await fetch(NAVER_BASE + path, {
-    method,
+  const sig = await sign(env.NAVER_SECRET, ts, 'GET', '/ncc/campaigns');
+  const res = await fetch(NAVER_BASE + '/ncc/campaigns', {
     headers: {
-      'X-Timestamp': ts,
-      'X-API-KEY': env.NAVER_API_KEY,
-      'X-Customer': env.NAVER_CUSTOMER_ID,
-      'X-Signature': signature,
+      'X-Timestamp': ts, 'X-API-KEY': env.NAVER_API_KEY,
+      'X-Customer': env.NAVER_CUSTOMER_ID, 'X-Signature': sig,
       'Content-Type': 'application/json',
     },
   });
   return res.json();
 }
 
-async function getStats(env, cid, fields, since, until) {
+// ── Naver API: 배치 통계 (같은 타입 캠페인 묶어서 호출) ──
+async function getBatchStats(env, cids, fields, since, until) {
+  const idsStr = cids.join(',');
   const f = encodeURIComponent(JSON.stringify(fields));
   const t = encodeURIComponent(JSON.stringify({ since, until }));
-  const qs = `ids=${cid}&fields=${f}&timeRange=${t}&timeUnit=TOTAL`;
+  const qs = `ids=${idsStr}&fields=${f}&timeRange=${t}&timeUnit=TOTAL`;
+
   const ts = String(Date.now());
-  const signature = await sign(env.NAVER_SECRET, ts, 'GET', '/stats');
+  const sig = await sign(env.NAVER_SECRET, ts, 'GET', '/stats');
   const res = await fetch(`${NAVER_BASE}/stats?${qs}`, {
     headers: {
-      'X-Timestamp': ts,
-      'X-API-KEY': env.NAVER_API_KEY,
-      'X-Customer': env.NAVER_CUSTOMER_ID,
-      'X-Signature': signature,
+      'X-Timestamp': ts, 'X-API-KEY': env.NAVER_API_KEY,
+      'X-Customer': env.NAVER_CUSTOMER_ID, 'X-Signature': sig,
       'Content-Type': 'application/json',
     },
   });
-  if (!res.ok) return null;
-  const json = await res.json();
-  return json.data && json.data[0] ? json.data[0] : null;
+  if (!res.ok) return [];
+  const data = await res.json();
+  return data.data || [];
 }
 
-// ── 배치 병렬 처리 ──
-async function batchProcess(items, fn) {
-  const results = [];
-  for (let i = 0; i < items.length; i += BATCH_SIZE) {
-    const batch = items.slice(i, i + BATCH_SIZE);
-    const batchResults = await Promise.all(batch.map(fn));
-    results.push(...batchResults);
+// ── 타입별 배치 통계 수집 ──
+async function collectAllStats(env, campaigns, fields, since, until) {
+  // 타입별로 그룹화
+  const typeGroups = {};
+  for (const c of campaigns) {
+    const tp = c.campaignTp || 'UNKNOWN';
+    if (!typeGroups[tp]) typeGroups[tp] = [];
+    typeGroups[tp].push(c.nccCampaignId);
   }
-  return results;
+
+  const statsMap = {};
+
+  // 각 타입의 캠페인을 BATCH_IDS개씩 묶어서 호출
+  for (const [tp, cids] of Object.entries(typeGroups)) {
+    for (let i = 0; i < cids.length; i += BATCH_IDS) {
+      const batch = cids.slice(i, i + BATCH_IDS);
+      const results = await getBatchStats(env, batch, fields, since, until);
+      for (const row of results) {
+        if (row.id) statsMap[row.id] = row;
+      }
+    }
+  }
+
+  return statsMap;
 }
 
 // ── 날짜 유틸 ──
-function parseDate(str) { return new Date(str + 'T00:00:00Z'); }
-function fmtDate(d) { return d.toISOString().slice(0, 10); }
-function addDays(d, n) { const r = new Date(d); r.setUTCDate(r.getUTCDate() + n); return r; }
-function daysBetween(a, b) { return Math.round((parseDate(b) - parseDate(a)) / 86400000) + 1; }
+function parseD(s) { return new Date(s + 'T00:00:00Z'); }
+function fmtD(d) { return d.toISOString().slice(0, 10); }
+function addD(d, n) { const r = new Date(d); r.setUTCDate(r.getUTCDate() + n); return r; }
+function daysBetween(a, b) { return Math.round((parseD(b) - parseD(a)) / 86400000) + 1; }
 
-function calcPrevPeriod(since, until) {
+function calcPrev(since, until) {
   const days = daysBetween(since, until);
-  const prevUntil = addDays(parseDate(since), -1);
-  const prevSince = addDays(prevUntil, -(days - 1));
-  return { since: fmtDate(prevSince), until: fmtDate(prevUntil) };
-}
-
-function getDateList(since, until) {
-  const dates = [];
-  let d = parseDate(since);
-  const end = parseDate(until);
-  while (d <= end) {
-    dates.push(fmtDate(d));
-    d = addDays(d, 1);
-  }
-  return dates;
+  const pu = addD(parseD(since), -1);
+  const ps = addD(pu, -(days - 1));
+  return { since: fmtD(ps), until: fmtD(pu) };
 }
 
 // ── KPI 합산 ──
@@ -151,104 +149,57 @@ function sumKPI(statsMap) {
 }
 
 // ── /api/dashboard ──
-async function handleDashboard(env, request) {
-  const url = new URL(request.url);
-  const today = new Date();
-  const yesterday = fmtDate(addDays(today, -1));
+async function handleDashboard(env, req) {
+  const url = new URL(req.url);
+  const today = fmtD(new Date());
+  const yesterday = fmtD(addD(new Date(), -1));
 
-  // 날짜 파라미터 (기본 최근 7일)
-  const since = url.searchParams.get('since') || fmtDate(addDays(today, -7));
+  const since = url.searchParams.get('since') || fmtD(addD(new Date(), -7));
   const until = url.searchParams.get('until') || yesterday;
-  const wantDaily = url.searchParams.get('daily') !== 'false';
 
-  // 기간 제한 (최대 1년)
   const periodDays = daysBetween(since, until);
-  if (periodDays > 366) {
-    return jsonResponse({ error: '최대 1년(366일)까지 조회 가능합니다.' }, 400, request);
-  }
+  if (periodDays > 366) return json({ error: '최대 1년까지 조회 가능합니다.' }, 400, req);
 
-  // 비교 기간 자동 계산
-  const prev = calcPrevPeriod(since, until);
+  const prev = calcPrev(since, until);
 
-  // 캠페인 목록
-  const campaigns = await naverFetch(env, 'GET', '/ncc/campaigns');
-  if (!Array.isArray(campaigns)) {
-    return jsonResponse({ error: 'Failed to fetch campaigns', detail: campaigns }, 500, request);
-  }
+  // 1. 캠페인 목록 (1 subrequest)
+  const campaigns = await getCampaigns(env);
+  if (!Array.isArray(campaigns)) return json({ error: 'Failed to fetch campaigns' }, 500, req);
 
-  // 이번 기간 + 이전 기간 통계 (배치 병렬)
-  const statsThis = {};
-  const statsPrev = {};
+  // 2. 이번 기간 통계 (~12 subrequests)
+  const statsThis = await collectAllStats(env, campaigns, ALL_FIELDS, since, until);
 
-  await batchProcess(campaigns, async (c) => {
-    const cid = c.nccCampaignId;
-    const [curr, previous] = await Promise.all([
-      getStats(env, cid, ALL_FIELDS, since, until),
-      getStats(env, cid, ALL_FIELDS, prev.since, prev.until),
-    ]);
-    if (curr) statsThis[cid] = curr;
-    if (previous) statsPrev[cid] = previous;
-    return cid;
-  });
+  // 3. 이전 기간 통계 (~12 subrequests)
+  const statsPrev = await collectAllStats(env, campaigns, ALL_FIELDS, prev.since, prev.until);
 
-  // 일별 데이터 (31일 이하만)
-  let dailyList = [];
-  if (wantDaily && periodDays <= MAX_DAILY_DAYS) {
-    const activeCids = Object.keys(statsThis);
-    const dates = getDateList(since, until);
-    const daily = {};
+  // Total: ~25 subrequests (well within 50 limit)
 
-    for (const dt of dates) {
-      daily[dt] = {};
-      DAILY_FIELDS.forEach(f => daily[dt][f] = 0);
-
-      await batchProcess(activeCids, async (cid) => {
-        const s = await getStats(env, cid, DAILY_FIELDS, dt, dt);
-        if (s) DAILY_FIELDS.forEach(f => daily[dt][f] += (s[f] || 0));
-        return cid;
-      });
-    }
-
-    dailyList = dates.map(dt => ({ date: dt, ...daily[dt] }));
-  }
-
-  // 캠페인별 경고 플래그 계산
+  // 캠페인 목록 + 경고 생성
   const alerts = [];
   const campList = campaigns.map(c => {
     const cid = c.nccCampaignId;
     const meta = {
-      id: cid,
-      name: c.name || '',
-      type: c.campaignTp || '',
-      deliveryStatus: c.status || '',
-      dailyBudget: c.dailyBudget || 0,
+      id: cid, name: c.name || '', type: c.campaignTp || '',
+      deliveryStatus: c.status || '', dailyBudget: c.dailyBudget || 0,
     };
     if (statsThis[cid]) meta.stats = statsThis[cid];
     if (statsPrev[cid]) meta.prevStats = statsPrev[cid];
 
-    // 광고비 급증 경고 (이전 기간 대비 50% 이상 증가)
+    // 광고비 급증 경고
     if (meta.stats && meta.prevStats) {
-      const currCost = meta.stats.salesAmt || 0;
-      const prevCost = meta.prevStats.salesAmt || 0;
-      if (prevCost > 0 && currCost > 0) {
-        const pctChange = ((currCost - prevCost) / prevCost) * 100;
-        if (pctChange >= 50) {
-          meta.costAlert = { pctChange: Math.round(pctChange), currCost, prevCost };
-          alerts.push({
-            campaignId: cid,
-            campaignName: c.name,
-            type: 'COST_SPIKE',
-            pctChange: Math.round(pctChange),
-            currCost,
-            prevCost,
-          });
+      const curr = meta.stats.salesAmt || 0;
+      const prev = meta.prevStats.salesAmt || 0;
+      if (prev > 0 && curr > 0) {
+        const pct = Math.round(((curr - prev) / prev) * 100);
+        if (pct >= 50) {
+          meta.costAlert = { pctChange: pct, currCost: curr, prevCost: prev };
+          alerts.push({ campaignId: cid, campaignName: c.name, type: 'COST_SPIKE', pctChange: pct, currCost: curr, prevCost: prev });
         }
       }
     }
     return meta;
   });
 
-  // 전체 KPI 경고
   const kpi = sumKPI(statsThis);
   const prevKpi = sumKPI(statsPrev);
   const totalCostChange = prevKpi.salesAmt > 0
@@ -256,51 +207,64 @@ async function handleDashboard(env, request) {
 
   if (totalCostChange >= 20) {
     alerts.unshift({
-      type: 'TOTAL_COST_UP',
-      pctChange: totalCostChange,
-      currCost: kpi.salesAmt,
-      prevCost: prevKpi.salesAmt,
+      type: 'TOTAL_COST_UP', pctChange: totalCostChange,
+      currCost: kpi.salesAmt, prevCost: prevKpi.salesAmt,
       message: `전체 광고비가 이전 기간 대비 ${totalCostChange}% 증가했습니다.`,
     });
   }
 
-  return jsonResponse({
+  return json({
     generated: new Date().toISOString(),
     period: { since, until, days: periodDays },
     prevPeriod: prev,
-    kpi,
-    prevKpi,
-    daily: dailyList,
+    kpi, prevKpi, alerts,
     campaigns: campList,
-    alerts,
     totalCampaigns: campaigns.length,
     statsCollected: Object.keys(statsThis).length,
-  }, 200, request);
+    daily: [], // daily data fetched separately via /api/daily
+  }, 200, req);
+}
+
+// ── /api/daily?date=YYYY-MM-DD ──
+async function handleDaily(env, req) {
+  const url = new URL(req.url);
+  const date = url.searchParams.get('date');
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return json({ error: 'date parameter required (YYYY-MM-DD)' }, 400, req);
+  }
+
+  // 캠페인 목록 (1 subrequest)
+  const campaigns = await getCampaigns(env);
+  if (!Array.isArray(campaigns)) return json({ error: 'Failed to fetch campaigns' }, 500, req);
+
+  // 해당 날짜 통계 (~12 subrequests)
+  const stats = await collectAllStats(env, campaigns, DAILY_FIELDS, date, date);
+
+  // 합산
+  const totals = {};
+  DAILY_FIELDS.forEach(f => totals[f] = 0);
+  for (const v of Object.values(stats)) {
+    DAILY_FIELDS.forEach(f => totals[f] += (v[f] || 0));
+  }
+
+  return json({ date, ...totals, campaignsWithData: Object.keys(stats).length }, 200, req);
 }
 
 // ── /api/ai ──
-async function handleAI(env, request) {
-  // Rate limit check
+async function handleAI(env, req) {
   const now = Date.now();
-  const clientIP = request.headers.get('CF-Connecting-IP') || 'unknown';
-  const rateKey = clientIP;
-  const rateData = aiRateMap.get(rateKey) || { count: 0, resetAt: now + AI_RATE_WINDOW };
-
-  if (now > rateData.resetAt) {
-    rateData.count = 0;
-    rateData.resetAt = now + AI_RATE_WINDOW;
+  const ip = req.headers.get('CF-Connecting-IP') || 'unknown';
+  const rate = aiRateMap.get(ip) || { count: 0, resetAt: now + AI_RATE_WINDOW };
+  if (now > rate.resetAt) { rate.count = 0; rate.resetAt = now + AI_RATE_WINDOW; }
+  if (rate.count >= AI_RATE_LIMIT) {
+    return json({ error: `AI 분석은 시간당 ${AI_RATE_LIMIT}회로 제한됩니다.` }, 429, req);
   }
-  if (rateData.count >= AI_RATE_LIMIT) {
-    return jsonResponse({ error: `AI 분석은 시간당 ${AI_RATE_LIMIT}회로 제한됩니다.` }, 429, request);
-  }
-  rateData.count++;
-  aiRateMap.set(rateKey, rateData);
+  rate.count++;
+  aiRateMap.set(ip, rate);
 
-  if (!env.CLAUDE_API_KEY) {
-    return jsonResponse({ error: 'CLAUDE_API_KEY가 설정되지 않았습니다.' }, 500, request);
-  }
+  if (!env.CLAUDE_API_KEY) return json({ error: 'CLAUDE_API_KEY 미설정' }, 500, req);
 
-  const body = await request.json();
+  const body = await req.json();
   const res = await fetch(CLAUDE_BASE, {
     method: 'POST',
     headers: {
@@ -314,52 +278,31 @@ async function handleAI(env, request) {
       messages: body.messages,
     }),
   });
-
-  const result = await res.json();
-  return jsonResponse(result, res.status, request);
+  return json(await res.json(), res.status, req);
 }
 
 // ── Router ──
 export default {
   async fetch(request, env) {
-    // CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: getCorsHeaders(request) });
     }
 
-    // Origin 검증 (health 제외)
     const url = new URL(request.url);
     const path = url.pathname;
 
     if (path !== '/health' && !isOriginAllowed(request)) {
-      return jsonResponse({ error: 'Forbidden: origin not allowed' }, 403, request);
+      return json({ error: 'Forbidden' }, 403, request);
     }
 
     try {
-      if (path === '/health') {
-        return jsonResponse({ status: 'ok', timestamp: new Date().toISOString() }, 200, request);
-      }
-
-      if (path === '/api/dashboard') {
-        return await handleDashboard(env, request);
-      }
-
-      if (path === '/api/ai' && request.method === 'POST') {
-        return await handleAI(env, request);
-      }
-
-      if (path === '/proxy') {
-        const apiPath = url.searchParams.get('path');
-        if (!apiPath) return jsonResponse({ error: 'path parameter required' }, 400, request);
-        return jsonResponse(await naverFetch(env, 'GET', apiPath), 200, request);
-      }
-
-      return jsonResponse({
-        error: 'Not found',
-        endpoints: ['/api/dashboard?since=&until=', '/api/ai', '/proxy?path=', '/health'],
-      }, 404, request);
+      if (path === '/health') return json({ status: 'ok', ts: new Date().toISOString() }, 200, request);
+      if (path === '/api/dashboard') return await handleDashboard(env, request);
+      if (path === '/api/daily') return await handleDaily(env, request);
+      if (path === '/api/ai' && request.method === 'POST') return await handleAI(env, request);
+      return json({ error: 'Not found' }, 404, request);
     } catch (e) {
-      return jsonResponse({ error: e.message, stack: e.stack }, 500, request);
+      return json({ error: e.message }, 500, request);
     }
   }
 };

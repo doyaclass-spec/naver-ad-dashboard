@@ -703,6 +703,13 @@ async function loadData(since, until) {
     }
 
     DATA = await res.json();
+
+    // 일별 데이터 별도 수집 (31일 이하)
+    if (DATA.period.days <= 31) {
+      updateLoading(85, '일별 데이터 수집 중...');
+      DATA.daily = await fetchDailyData(workerUrl, DATA.period.since, DATA.period.until);
+    }
+
     localStorage.setItem('pokool_dash_data', JSON.stringify(DATA));
     document.getElementById('statusDot').style.background = 'var(--green)';
     document.getElementById('statusText').textContent = `실시간 · ${new Date().toLocaleTimeString('ko-KR')}`;
@@ -724,6 +731,27 @@ async function loadData(since, until) {
   updateLoading(90, '화면 렌더링 중...');
   renderAll();
   hideLoading();
+}
+
+// ── Fetch daily data day-by-day ──
+async function fetchDailyData(workerUrl, since, until) {
+  const dates = [];
+  let d = new Date(since + 'T00:00:00Z');
+  const end = new Date(until + 'T00:00:00Z');
+  while (d <= end) {
+    dates.push(d.toISOString().slice(0, 10));
+    d.setUTCDate(d.getUTCDate() + 1);
+  }
+
+  const daily = [];
+  for (let i = 0; i < dates.length; i++) {
+    try {
+      const r = await fetch(`${workerUrl}/api/daily?date=${dates[i]}`, { signal: AbortSignal.timeout(30000) });
+      if (r.ok) daily.push(await r.json());
+    } catch {}
+    updateLoading(85 + Math.round((i / dates.length) * 10), `일별 데이터 ${i+1}/${dates.length}...`);
+  }
+  return daily;
 }
 
 function renderAll() {
