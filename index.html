@@ -16,81 +16,117 @@
   --shadow-lg:0 4px 12px rgba(0,0,0,.08);
 }
 body{font-family:Pretendard,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
-.container{max-width:1400px;margin:0 auto;padding:20px 24px}
+.container{max-width:1440px;margin:0 auto;padding:20px 24px}
 
 /* Header */
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
 .header h1{font-size:22px;font-weight:700;letter-spacing:-.3px}
 .header h1 span{color:var(--blue);font-weight:800}
-.header-right{display:flex;align-items:center;gap:10px}
-.period-badge{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:13px;color:var(--sub)}
-.btn{padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.btn{padding:7px 14px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
 .btn-primary{background:var(--blue);color:#fff}
 .btn-primary:hover{background:#4a7cde}
 .btn-outline{background:var(--card);border:1px solid var(--border);color:var(--text)}
 .btn-outline:hover{border-color:var(--blue);color:var(--blue)}
 .btn-ai{background:linear-gradient(135deg,#9b6dff,#5b8def);color:#fff}
 .btn-ai:hover{opacity:.9}
-.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px}
+.btn-sm{padding:5px 10px;font-size:12px}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
 .status-text{font-size:12px;color:var(--sub)}
 
+/* Date Picker */
+.date-bar{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.date-presets{display:flex;gap:4px}
+.date-preset{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid var(--border);cursor:pointer;background:var(--card);color:var(--sub);transition:all .15s}
+.date-preset.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.date-custom{display:flex;align-items:center;gap:6px}
+.date-input{padding:5px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;width:130px}
+.date-input:focus{border-color:var(--blue);outline:none}
+
+/* Alert Panel */
+.alert-panel{margin-bottom:20px}
+.alert-item{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:10px;margin-bottom:8px;font-size:13px;font-weight:500}
+.alert-danger{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+.alert-warning{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+.alert-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+.alert-icon{font-size:18px;flex-shrink:0}
+.alert-text{flex:1}
+.alert-badge{padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700}
+.alert-danger .alert-badge{background:#fee2e2;color:#dc2626}
+.alert-warning .alert-badge{background:#fef3c7;color:#d97706}
+
 /* KPI Cards */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:24px}
-.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:var(--shadow);transition:box-shadow .15s}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:12px;margin-bottom:20px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow);transition:box-shadow .15s}
 .kpi-card:hover{box-shadow:var(--shadow-lg)}
-.kpi-label{font-size:12px;color:var(--sub);font-weight:500;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.kpi-card.alert-border{border-color:#fca5a5;box-shadow:0 0 0 1px #fca5a5}
+.kpi-label{font-size:12px;color:var(--sub);font-weight:500;margin-bottom:4px;display:flex;align-items:center;gap:6px}
 .kpi-icon{width:18px;height:18px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff}
-.kpi-value{font-size:26px;font-weight:700;letter-spacing:-.5px;margin-bottom:4px}
+.kpi-value{font-size:24px;font-weight:700;letter-spacing:-.5px;margin-bottom:3px}
 .kpi-change{font-size:12px;font-weight:600;display:flex;align-items:center;gap:3px}
 .kpi-change.up{color:var(--green)}
 .kpi-change.down{color:var(--red)}
 .kpi-change.neutral{color:var(--sub)}
 .kpi-prev{font-size:11px;color:var(--sub);margin-top:2px}
 
-/* Chart Section */
-.section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow);margin-bottom:20px}
-.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+/* Section */
+.section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow);margin-bottom:18px}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
 .section-title{font-size:15px;font-weight:700}
 .chart-tabs{display:flex;gap:4px}
-.chart-tab{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;border:none;cursor:pointer;background:transparent;color:var(--sub);transition:all .15s}
+.chart-tab{padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;border:none;cursor:pointer;background:transparent;color:var(--sub);transition:all .15s}
 .chart-tab.active{background:var(--blue);color:#fff}
-.chart-container{position:relative;height:280px}
+.chart-container{position:relative;height:260px}
+.chart-empty{display:flex;align-items:center;justify-content:center;height:260px;color:var(--sub);font-size:14px}
 
 /* Table */
-.table-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
-.search-input{padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;width:240px;outline:none;font-family:inherit}
+.table-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.search-input{padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;width:220px;outline:none;font-family:inherit}
 .search-input:focus{border-color:var(--blue)}
 .filter-group{display:flex;gap:4px}
-.filter-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid var(--border);cursor:pointer;background:var(--card);color:var(--sub);transition:all .15s}
+.filter-btn{padding:4px 10px;border-radius:6px;font-size:12px;font-weight:500;border:1px solid var(--border);cursor:pointer;background:var(--card);color:var(--sub);transition:all .15s}
 .filter-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:10px 12px;font-weight:600;color:var(--sub);font-size:11px;text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none}
+th{text-align:left;padding:9px 10px;font-weight:600;color:var(--sub);font-size:11px;text-transform:uppercase;letter-spacing:.3px;border-bottom:2px solid var(--border);cursor:pointer;white-space:nowrap;user-select:none}
 th:hover{color:var(--text)}
 th .sort-icon{margin-left:3px;opacity:.4}
 th.sorted .sort-icon{opacity:1;color:var(--blue)}
-td{padding:10px 12px;border-bottom:1px solid #f3f1ee;white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid #f3f1ee;white-space:nowrap}
 tr:hover td{background:#faf8f5}
-.camp-name{max-width:260px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+tr.cost-alert td{background:#fef2f2}
+.camp-name{max-width:240px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 .type-badge{padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
 .type-SHOPPING{background:#e8f4fd;color:#1a73e8}
 .type-WEB_SITE{background:#e8f5e9;color:#2e7d32}
 .type-POWER_CONTENTS{background:#fff3e0;color:#ef6c00}
 .type-BRAND_SEARCH{background:#f3e8fd;color:#7b1fa2}
 .num{text-align:right;font-variant-numeric:tabular-nums}
-.num-highlight{font-weight:600;color:var(--text)}
+.num-highlight{font-weight:600}
+.cost-up{color:var(--red);font-weight:600}
+.change-badge{font-size:10px;padding:1px 5px;border-radius:3px;margin-left:4px}
+.change-badge.up{background:#fee2e2;color:#dc2626}
+.change-badge.down{background:#dcfce7;color:#16a34a}
 
 /* AI Panel */
-.ai-panel{background:linear-gradient(135deg,#f8f6ff,#f0f4ff);border:1px solid #e0d8f8;border-radius:12px;padding:20px;margin-bottom:20px}
+.ai-panel{background:linear-gradient(135deg,#f8f6ff,#f0f4ff);border:1px solid #e0d8f8;border-radius:12px;padding:20px;margin-bottom:18px}
 .ai-panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .ai-panel-title{font-size:15px;font-weight:700;color:#6b4ce6}
-.ai-result{font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap}
-.ai-result h4{font-size:14px;font-weight:700;margin:12px 0 6px;color:#5b4cbe}
+.ai-result{font-size:13px;line-height:1.8;color:var(--text)}
+.ai-section{margin-bottom:12px}
+.ai-section h4{font-size:14px;font-weight:700;color:#5b4cbe;margin-bottom:6px}
 .ai-loading{display:flex;align-items:center;gap:8px;color:var(--sub);font-size:13px}
 .spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* Settings Modal */
+/* Loading Overlay */
+.loading-overlay{position:fixed;inset:0;background:rgba(255,255,255,.8);z-index:50;display:none;justify-content:center;align-items:center;flex-direction:column;gap:12px}
+.loading-overlay.show{display:flex}
+.loading-text{font-size:14px;color:var(--text);font-weight:600}
+.progress-bar{width:240px;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--blue);border-radius:3px;transition:width .3s}
+
+/* Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;justify-content:center;align-items:center}
 .modal-overlay.show{display:flex}
 .modal{background:var(--card);border-radius:14px;padding:28px;width:90%;max-width:420px;box-shadow:0 20px 40px rgba(0,0,0,.15)}
@@ -98,22 +134,29 @@ tr:hover td{background:#faf8f5}
 .modal label{font-size:12px;font-weight:600;color:var(--sub);display:block;margin-bottom:4px;margin-top:12px}
 .modal input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit}
 .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+.modal .info-text{font-size:11px;color:var(--sub);margin-top:4px;line-height:1.5}
+.security-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;background:#dcfce7;color:#16a34a;margin-top:12px}
 
 /* Responsive */
 @media(max-width:768px){
   .container{padding:12px}
-  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:8px}
   .kpi-value{font-size:20px}
   .header h1{font-size:18px}
-  .chart-container{height:220px}
+  .chart-container,.chart-empty{height:200px}
   .search-input{width:100%}
-}
-@media(max-width:480px){
-  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .date-bar{flex-direction:column;align-items:flex-start}
 }
 </style>
 </head>
 <body>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner" style="width:32px;height:32px;border-width:3px"></div>
+  <div class="loading-text" id="loadingText">데이터 불러오는 중...</div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+</div>
 
 <div class="container">
   <!-- Header -->
@@ -121,16 +164,35 @@ tr:hover td{background:#faf8f5}
     <div>
       <h1><span>포쿨</span> 광고 대시보드</h1>
       <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
-        <span class="status-dot" id="statusDot"></span>
-        <span class="status-text" id="statusText">데이터 로딩 중...</span>
+        <span class="status-dot" id="statusDot" style="background:var(--orange)"></span>
+        <span class="status-text" id="statusText">초기화 중...</span>
       </div>
     </div>
     <div class="header-right">
-      <span class="period-badge" id="periodBadge">-</span>
-      <button class="btn btn-outline" onclick="refreshData()">새로고침</button>
-      <button class="btn btn-outline" onclick="showSettings()">설정</button>
+      <button class="btn btn-outline btn-sm" onclick="showSettings()">설정</button>
     </div>
   </div>
+
+  <!-- Date Picker -->
+  <div class="date-bar">
+    <div class="date-presets" id="datePresets">
+      <button class="date-preset active" data-days="7">최근 7일</button>
+      <button class="date-preset" data-days="14">2주</button>
+      <button class="date-preset" data-days="30">1개월</button>
+      <button class="date-preset" data-days="90">3개월</button>
+      <button class="date-preset" data-days="180">6개월</button>
+      <button class="date-preset" data-days="365">1년</button>
+    </div>
+    <div class="date-custom">
+      <input type="date" class="date-input" id="dateSince">
+      <span style="color:var(--sub)">~</span>
+      <input type="date" class="date-input" id="dateUntil">
+      <button class="btn btn-primary btn-sm" onclick="loadCustomRange()">조회</button>
+    </div>
+  </div>
+
+  <!-- Alert Panel -->
+  <div class="alert-panel" id="alertPanel"></div>
 
   <!-- KPI Cards -->
   <div class="kpi-grid" id="kpiGrid"></div>
@@ -147,24 +209,27 @@ tr:hover td{background:#faf8f5}
         <button class="chart-tab" data-metric="convAmt">전환매출</button>
       </div>
     </div>
-    <div class="chart-container">
-      <canvas id="dailyChart"></canvas>
+    <div id="chartArea">
+      <div class="chart-container"><canvas id="dailyChart"></canvas></div>
     </div>
   </div>
 
   <!-- AI Analysis -->
   <div class="ai-panel">
     <div class="ai-panel-header">
-      <span class="ai-panel-title">AI 성과 분석</span>
+      <span class="ai-panel-title">AI 광고 전략 분석</span>
       <button class="btn btn-ai" onclick="runAIAnalysis()">AI 분석 실행</button>
     </div>
-    <div id="aiResult" class="ai-result" style="color:var(--sub)">AI 분석 버튼을 클릭하면 Claude가 광고 성과를 분석합니다.</div>
+    <div id="aiResult" class="ai-result" style="color:var(--sub)">AI 분석 버튼을 클릭하면 광고 성과 분석 + 다음 주 전략을 생성합니다.</div>
   </div>
 
   <!-- Campaign Table -->
   <div class="section">
     <div class="section-header">
       <span class="section-title">캠페인 성과 (<span id="campCount">0</span>개)</span>
+      <label style="font-size:12px;color:var(--sub);cursor:pointer">
+        <input type="checkbox" id="alertOnlyToggle" style="margin-right:4px"> 경고 캠페인만
+      </label>
     </div>
     <div class="table-controls">
       <input type="text" class="search-input" id="searchInput" placeholder="캠페인 검색...">
@@ -172,7 +237,7 @@ tr:hover td{background:#faf8f5}
         <button class="filter-btn active" data-type="ALL">전체</button>
         <button class="filter-btn" data-type="SHOPPING">쇼핑</button>
         <button class="filter-btn" data-type="WEB_SITE">파워링크</button>
-        <button class="filter-btn" data-type="POWER_CONTENTS">파워콘텐츠</button>
+        <button class="filter-btn" data-type="POWER_CONTENTS">콘텐츠</button>
         <button class="filter-btn" data-type="BRAND_SEARCH">브랜드</button>
       </div>
     </div>
@@ -190,9 +255,9 @@ tr:hover td{background:#faf8f5}
   <div class="modal">
     <h3>설정</h3>
     <label>Cloudflare Worker URL</label>
-    <input id="workerUrl" placeholder="https://your-worker.workers.dev">
-    <label>Claude API Key</label>
-    <input id="claudeKey" type="password" placeholder="sk-ant-...">
+    <input id="workerUrl" placeholder="https://pokool-ad-dashboard.pokool-ad.workers.dev">
+    <div class="info-text">Worker에 네이버 API 키와 Claude API 키가 안전하게 보관됩니다.</div>
+    <div class="security-badge">API 키가 브라우저에 저장되지 않습니다</div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeSettings()">취소</button>
       <button class="btn btn-primary" onclick="saveSettings()">저장</button>
@@ -201,26 +266,8 @@ tr:hover td{background:#faf8f5}
 </div>
 
 <script>
-// ── Embedded Data (static snapshot) ──
-const EMBEDDED_DATA = {
-  "generated":"2026-03-21T03:39:00",
-  "period":{"since":"2026-03-14","until":"2026-03-20"},
-  "prevPeriod":{"since":"2026-03-07","until":"2026-03-13"},
-  "kpi":{"impCnt":388178,"clkCnt":4484,"ctr":1.16,"cpc":1240,"salesAmt":5558333,"ccnt":554,"convAmt":1100852610,"ror":19805.45,"crto":12.36,"cpConv":10033},
-  "prevKpi":{"impCnt":395446,"clkCnt":4314,"ctr":1.09,"cpc":1146,"salesAmt":4942179,"ccnt":265,"convAmt":395752620,"ror":8007.65,"crto":6.14,"cpConv":18650},
-  "daily":[
-    {"date":"2026-03-14","impCnt":50233,"clkCnt":458,"salesAmt":519233,"ccnt":52,"convAmt":108453780},
-    {"date":"2026-03-15","impCnt":48227,"clkCnt":538,"salesAmt":582098,"ccnt":58,"convAmt":114779300},
-    {"date":"2026-03-16","impCnt":56633,"clkCnt":711,"salesAmt":816123,"ccnt":113,"convAmt":243926700},
-    {"date":"2026-03-17","impCnt":50302,"clkCnt":697,"salesAmt":838332,"ccnt":100,"convAmt":216487200},
-    {"date":"2026-03-18","impCnt":55635,"clkCnt":688,"salesAmt":783805,"ccnt":89,"convAmt":178175770},
-    {"date":"2026-03-19","impCnt":62054,"clkCnt":732,"salesAmt":1039335,"ccnt":74,"convAmt":141693520},
-    {"date":"2026-03-20","impCnt":65094,"clkCnt":660,"salesAmt":979407,"ccnt":68,"convAmt":97336340}
-  ],
-  "campaigns":null,
-  "totalCampaigns":160,
-  "statsCollected":74
-};
+// ── Config ──
+const DEFAULT_WORKER = 'https://pokool-ad-dashboard.pokool-ad.workers.dev';
 
 // ── State ──
 let DATA = null;
@@ -228,38 +275,33 @@ let dailyChart = null;
 let currentMetric = 'salesAmt';
 let currentFilter = 'ALL';
 let sortCol = 'salesAmt';
-let sortDir = -1; // desc
+let sortDir = -1;
+let alertOnly = false;
 
 // ── Settings ──
-const DEFAULT_WORKER_URL = 'https://pokool-ad-dashboard.pokool-ad.workers.dev';
-function getSettings() {
+function getWorkerUrl() {
   try {
     const s = JSON.parse(localStorage.getItem('pokool_dash_settings') || '{}');
-    if (!s.workerUrl) s.workerUrl = DEFAULT_WORKER_URL;
-    return s;
-  } catch { return { workerUrl: DEFAULT_WORKER_URL }; }
+    return s.workerUrl || DEFAULT_WORKER;
+  } catch { return DEFAULT_WORKER; }
 }
 function showSettings() {
-  const s = getSettings();
-  document.getElementById('workerUrl').value = s.workerUrl || '';
-  document.getElementById('claudeKey').value = s.claudeKey || '';
+  document.getElementById('workerUrl').value = getWorkerUrl();
   document.getElementById('settingsModal').classList.add('show');
 }
 function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); }
 function saveSettings() {
-  const s = { workerUrl: document.getElementById('workerUrl').value.trim(), claudeKey: document.getElementById('claudeKey').value.trim() };
-  localStorage.setItem('pokool_dash_settings', JSON.stringify(s));
+  localStorage.setItem('pokool_dash_settings', JSON.stringify({ workerUrl: document.getElementById('workerUrl').value.trim() }));
   closeSettings();
-  if (s.workerUrl) refreshData();
 }
 
-// ── Number Formatting ──
+// ── Formatting ──
 function fmt(n, type) {
   if (n == null || isNaN(n)) return '-';
   if (type === 'money') return Math.round(n).toLocaleString('ko-KR') + '원';
   if (type === 'bigmoney') {
-    if (n >= 100000000) return (n / 100000000).toFixed(1) + '억';
-    if (n >= 10000) return (n / 10000).toFixed(0) + '만';
+    if (Math.abs(n) >= 100000000) return (n / 100000000).toFixed(1) + '억';
+    if (Math.abs(n) >= 10000) return Math.round(n / 10000).toLocaleString('ko-KR') + '만';
     return Math.round(n).toLocaleString('ko-KR') + '원';
   }
   if (type === 'pct') return n.toFixed(2) + '%';
@@ -275,11 +317,89 @@ function pctChange(curr, prev) {
   return { val: p, cls, txt: `${arrow} ${Math.abs(p).toFixed(1)}%` };
 }
 
+// ── Loading UI ──
+function showLoading(msg) {
+  document.getElementById('loadingText').textContent = msg || '데이터 불러오는 중...';
+  document.getElementById('progressFill').style.width = '10%';
+  document.getElementById('loadingOverlay').classList.add('show');
+}
+function updateLoading(pct, msg) {
+  document.getElementById('progressFill').style.width = pct + '%';
+  if (msg) document.getElementById('loadingText').textContent = msg;
+}
+function hideLoading() {
+  document.getElementById('progressFill').style.width = '100%';
+  setTimeout(() => document.getElementById('loadingOverlay').classList.remove('show'), 300);
+}
+
+// ── Date Helpers ──
+function fmtDateStr(daysAgo) {
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  return d.toISOString().slice(0, 10);
+}
+
+function getSelectedRange() {
+  const active = document.querySelector('.date-preset.active');
+  if (active) {
+    const days = parseInt(active.dataset.days);
+    return { since: fmtDateStr(days), until: fmtDateStr(1) };
+  }
+  return {
+    since: document.getElementById('dateSince').value,
+    until: document.getElementById('dateUntil').value,
+  };
+}
+
+function updateDateInputs(since, until) {
+  document.getElementById('dateSince').value = since;
+  document.getElementById('dateUntil').value = until;
+}
+
+// ── Alert Rendering ──
+function renderAlerts() {
+  const el = document.getElementById('alertPanel');
+  if (!DATA || !DATA.alerts || DATA.alerts.length === 0) {
+    el.innerHTML = '';
+    return;
+  }
+
+  const totalAlerts = DATA.alerts.filter(a => a.type === 'TOTAL_COST_UP');
+  const campAlerts = DATA.alerts.filter(a => a.type === 'COST_SPIKE')
+    .sort((a, b) => b.pctChange - a.pctChange);
+
+  let html = '';
+
+  // 전체 광고비 경고
+  totalAlerts.forEach(a => {
+    const isHigh = a.pctChange >= 30;
+    html += `<div class="alert-item ${isHigh ? 'alert-danger' : 'alert-warning'}">
+      <span class="alert-icon">${isHigh ? '🚨' : '⚠️'}</span>
+      <span class="alert-text">${a.message}</span>
+      <span class="alert-badge">+${a.pctChange}%</span>
+    </div>`;
+  });
+
+  // 캠페인별 광고비 급증 (상위 5개)
+  if (campAlerts.length > 0) {
+    const top = campAlerts.slice(0, 5);
+    html += `<div class="alert-item alert-warning">
+      <span class="alert-icon">📊</span>
+      <span class="alert-text">광고비 급증 캠페인 ${campAlerts.length}개:
+        ${top.map(a => `<strong>${a.campaignName}</strong>(+${a.pctChange}%)`).join(', ')}
+        ${campAlerts.length > 5 ? ` 외 ${campAlerts.length - 5}개` : ''}
+      </span>
+    </div>`;
+  }
+
+  el.innerHTML = html;
+}
+
 // ── KPI Cards ──
 const KPI_DEFS = [
   { key: 'impCnt', label: '노출수', fmt: 'int', color: '#5b8def', icon: '👁' },
   { key: 'clkCnt', label: '클릭수', fmt: 'int', color: '#4caf7d', icon: '👆' },
-  { key: 'ctr', label: 'CTR', fmt: 'pct', color: '#f5a623', icon: '%', invertChange: false },
+  { key: 'ctr', label: 'CTR', fmt: 'pct', color: '#f5a623', icon: '%' },
   { key: 'salesAmt', label: '광고비', fmt: 'bigmoney', color: '#e8636f', icon: '₩', invertChange: true },
   { key: 'ccnt', label: '전환수', fmt: 'int', color: '#9b6dff', icon: '✓' },
   { key: 'ror', label: 'ROAS', fmt: 'pct', color: '#2196f3', icon: 'R' },
@@ -288,32 +408,46 @@ const KPI_DEFS = [
 function renderKPI() {
   const g = document.getElementById('kpiGrid');
   const k = DATA.kpi, pk = DATA.prevKpi;
+  const periodLabel = DATA.period.days <= 7 ? '전주' : DATA.period.days <= 31 ? '전월' : '이전 기간';
+
   g.innerHTML = KPI_DEFS.map(d => {
     const ch = pctChange(k[d.key], pk[d.key]);
-    // For cost, up = bad (red), down = good (green)
     let changeCls = ch.cls;
     if (d.invertChange && ch.cls === 'up') changeCls = 'down';
     else if (d.invertChange && ch.cls === 'down') changeCls = 'up';
-    return `<div class="kpi-card">
+    const isAlert = d.key === 'salesAmt' && ch.val > 20;
+    return `<div class="kpi-card${isAlert ? ' alert-border' : ''}">
       <div class="kpi-label"><span class="kpi-icon" style="background:${d.color}">${d.icon}</span>${d.label}</div>
       <div class="kpi-value">${fmt(k[d.key], d.fmt)}</div>
-      <div class="kpi-change ${changeCls}">${ch.txt} <span style="font-weight:400;color:var(--sub);margin-left:4px">vs 전주</span></div>
-      <div class="kpi-prev">전주: ${fmt(pk[d.key], d.fmt)}</div>
+      <div class="kpi-change ${changeCls}">${ch.txt} <span style="font-weight:400;color:var(--sub);margin-left:4px">vs ${periodLabel}</span></div>
+      <div class="kpi-prev">${periodLabel}: ${fmt(pk[d.key], d.fmt)}</div>
     </div>`;
   }).join('');
 }
 
 // ── Daily Chart ──
-const METRIC_LABELS = { salesAmt: '광고비', clkCnt: '클릭수', impCnt: '노출수', ccnt: '전환수', convAmt: '전환매출' };
-const METRIC_COLORS = { salesAmt: '#e8636f', clkCnt: '#4caf7d', impCnt: '#5b8def', ccnt: '#9b6dff', convAmt: '#f5a623' };
+const METRIC_LABELS = { salesAmt:'광고비', clkCnt:'클릭수', impCnt:'노출수', ccnt:'전환수', convAmt:'전환매출' };
+const METRIC_COLORS = { salesAmt:'#e8636f', clkCnt:'#4caf7d', impCnt:'#5b8def', ccnt:'#9b6dff', convAmt:'#f5a623' };
 
 function renderChart() {
+  const area = document.getElementById('chartArea');
+
+  if (!DATA.daily || DATA.daily.length === 0) {
+    area.innerHTML = `<div class="chart-empty">31일 이내 기간을 선택하면 일별 차트가 표시됩니다.</div>`;
+    if (dailyChart) { dailyChart.destroy(); dailyChart = null; }
+    return;
+  }
+
+  area.innerHTML = '<div class="chart-container"><canvas id="dailyChart"></canvas></div>';
   const ctx = document.getElementById('dailyChart').getContext('2d');
   if (dailyChart) dailyChart.destroy();
 
   const labels = DATA.daily.map(d => {
     const dt = new Date(d.date);
-    return `${dt.getMonth()+1}/${dt.getDate()}(${['일','월','화','수','목','금','토'][dt.getDay()]})`;
+    const day = ['일','월','화','수','목','금','토'][dt.getDay()];
+    return DATA.daily.length <= 14
+      ? `${dt.getMonth()+1}/${dt.getDate()}(${day})`
+      : `${dt.getMonth()+1}/${dt.getDate()}`;
   });
   const values = DATA.daily.map(d => d[currentMetric] || 0);
   const color = METRIC_COLORS[currentMetric];
@@ -329,7 +463,7 @@ function renderChart() {
         backgroundColor: color + '18',
         fill: true,
         tension: .35,
-        pointRadius: 4,
+        pointRadius: DATA.daily.length <= 14 ? 4 : 2,
         pointHoverRadius: 6,
         pointBackgroundColor: '#fff',
         pointBorderColor: color,
@@ -343,35 +477,22 @@ function renderChart() {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: '#fff',
-          titleColor: '#2d2a26',
-          bodyColor: '#2d2a26',
-          borderColor: '#e8e4df',
-          borderWidth: 1,
-          cornerRadius: 8,
-          padding: 12,
-          titleFont: { family: 'Pretendard', weight: '600' },
-          bodyFont: { family: 'Pretendard' },
+          backgroundColor: '#fff', titleColor: '#2d2a26', bodyColor: '#2d2a26',
+          borderColor: '#e8e4df', borderWidth: 1, cornerRadius: 8, padding: 12,
+          titleFont: { family:'Pretendard', weight:'600' },
+          bodyFont: { family:'Pretendard' },
           callbacks: {
-            label: ctx => {
-              const v = ctx.raw;
-              if (['salesAmt','convAmt'].includes(currentMetric)) return fmt(v, 'money');
-              return fmt(v, 'int');
-            }
+            label: ctx => ['salesAmt','convAmt'].includes(currentMetric) ? fmt(ctx.raw,'money') : fmt(ctx.raw,'int')
           }
         }
       },
       scales: {
-        x: { grid: { display: false }, ticks: { font: { family: 'Pretendard', size: 11 } } },
+        x: { grid:{display:false}, ticks:{font:{family:'Pretendard',size:11}, maxRotation:45} },
         y: {
-          grid: { color: '#f3f1ee' },
+          grid:{color:'#f3f1ee'},
           ticks: {
-            font: { family: 'Pretendard', size: 11 },
-            callback: v => {
-              if (v >= 100000000) return (v/100000000).toFixed(0) + '억';
-              if (v >= 10000) return (v/10000).toFixed(0) + '만';
-              return v.toLocaleString();
-            }
+            font:{family:'Pretendard',size:11},
+            callback: v => v>=100000000?(v/100000000).toFixed(0)+'억':v>=10000?(v/10000).toFixed(0)+'만':v.toLocaleString()
           }
         }
       }
@@ -381,31 +502,42 @@ function renderChart() {
 
 // ── Campaign Table ──
 const TABLE_COLS = [
-  { key: 'name', label: '캠페인', sortable: true },
-  { key: 'type', label: '타입', sortable: true },
-  { key: 'impCnt', label: '노출', sortable: true, num: true },
-  { key: 'clkCnt', label: '클릭', sortable: true, num: true },
-  { key: 'ctr', label: 'CTR', sortable: true, num: true },
-  { key: 'cpc', label: 'CPC', sortable: true, num: true },
-  { key: 'salesAmt', label: '광고비', sortable: true, num: true },
-  { key: 'ccnt', label: '전환', sortable: true, num: true },
-  { key: 'convAmt', label: '전환매출', sortable: true, num: true },
-  { key: 'ror', label: 'ROAS', sortable: true, num: true },
+  { key:'name', label:'캠페인', sortable:true },
+  { key:'type', label:'타입', sortable:true },
+  { key:'impCnt', label:'노출', sortable:true, num:true },
+  { key:'clkCnt', label:'클릭', sortable:true, num:true },
+  { key:'ctr', label:'CTR', sortable:true, num:true },
+  { key:'cpc', label:'CPC', sortable:true, num:true },
+  { key:'salesAmt', label:'광고비', sortable:true, num:true },
+  { key:'ccnt', label:'전환', sortable:true, num:true },
+  { key:'convAmt', label:'전환매출', sortable:true, num:true },
+  { key:'ror', label:'ROAS', sortable:true, num:true },
+  { key:'costChange', label:'광고비 변동', sortable:true, num:true },
 ];
 
-const TYPE_LABELS = { SHOPPING: '쇼핑', WEB_SITE: '파워링크', POWER_CONTENTS: '콘텐츠', BRAND_SEARCH: '브랜드' };
+const TYPE_LABELS = { SHOPPING:'쇼핑', WEB_SITE:'파워링크', POWER_CONTENTS:'콘텐츠', BRAND_SEARCH:'브랜드' };
+
+function getCostChange(c) {
+  if (!c.stats || !c.prevStats) return null;
+  const curr = c.stats.salesAmt || 0;
+  const prev = c.prevStats.salesAmt || 0;
+  if (prev === 0) return null;
+  return Math.round(((curr - prev) / prev) * 100);
+}
 
 function getFilteredCampaigns() {
   let list = (DATA.campaigns || []).filter(c => c.stats);
   const q = document.getElementById('searchInput').value.toLowerCase();
   if (q) list = list.filter(c => c.name.toLowerCase().includes(q));
   if (currentFilter !== 'ALL') list = list.filter(c => c.type === currentFilter);
+  if (alertOnly) list = list.filter(c => c.costAlert);
 
   list.sort((a, b) => {
     let av, bv;
     if (sortCol === 'name') { av = a.name; bv = b.name; }
     else if (sortCol === 'type') { av = a.type; bv = b.type; }
-    else { av = (a.stats && a.stats[sortCol]) || 0; bv = (b.stats && b.stats[sortCol]) || 0; }
+    else if (sortCol === 'costChange') { av = getCostChange(a) ?? -999; bv = getCostChange(b) ?? -999; }
+    else { av = (a.stats?.[sortCol]) || 0; bv = (b.stats?.[sortCol]) || 0; }
     if (av < bv) return -1 * sortDir;
     if (av > bv) return 1 * sortDir;
     return 0;
@@ -414,146 +546,213 @@ function getFilteredCampaigns() {
 }
 
 function renderTable() {
-  // Head
   document.getElementById('tableHead').innerHTML = '<tr>' + TABLE_COLS.map(c =>
-    `<th class="${c.num ? 'num' : ''} ${sortCol === c.key ? 'sorted' : ''}" data-col="${c.key}">
-      ${c.label}<span class="sort-icon">${sortCol === c.key ? (sortDir === 1 ? '▲' : '▼') : '⇅'}</span>
+    `<th class="${c.num?'num':''} ${sortCol===c.key?'sorted':''}" data-col="${c.key}">
+      ${c.label}<span class="sort-icon">${sortCol===c.key?(sortDir===1?'▲':'▼'):'⇅'}</span>
     </th>`
   ).join('') + '</tr>';
 
-  // Body
   const list = getFilteredCampaigns();
   document.getElementById('campCount').textContent = list.length;
 
   document.getElementById('tableBody').innerHTML = list.map(c => {
     const s = c.stats || {};
-    return `<tr>
+    const cc = getCostChange(c);
+    const isAlert = c.costAlert;
+    return `<tr class="${isAlert ? 'cost-alert' : ''}">
       <td class="camp-name" title="${c.name}">${c.name}</td>
-      <td><span class="type-badge type-${c.type}">${TYPE_LABELS[c.type] || c.type}</span></td>
-      <td class="num">${fmt(s.impCnt, 'int')}</td>
-      <td class="num">${fmt(s.clkCnt, 'int')}</td>
-      <td class="num">${fmt(s.ctr, 'pct')}</td>
-      <td class="num">${fmt(s.cpc, 'money')}</td>
-      <td class="num num-highlight">${fmt(s.salesAmt, 'money')}</td>
-      <td class="num">${fmt(s.ccnt, 'int')}</td>
-      <td class="num num-highlight">${fmt(s.convAmt, 'bigmoney')}</td>
-      <td class="num" style="font-weight:600;color:${(s.ror||0)>500?'var(--green)':'var(--text)'}">${fmt(s.ror, 'pct')}</td>
+      <td><span class="type-badge type-${c.type}">${TYPE_LABELS[c.type]||c.type}</span></td>
+      <td class="num">${fmt(s.impCnt,'int')}</td>
+      <td class="num">${fmt(s.clkCnt,'int')}</td>
+      <td class="num">${fmt(s.ctr,'pct')}</td>
+      <td class="num">${fmt(s.cpc,'money')}</td>
+      <td class="num num-highlight">${fmt(s.salesAmt,'money')}</td>
+      <td class="num">${fmt(s.ccnt,'int')}</td>
+      <td class="num num-highlight">${fmt(s.convAmt,'bigmoney')}</td>
+      <td class="num" style="font-weight:600;color:${(s.ror||0)>500?'var(--green)':'var(--text)'}">${fmt(s.ror,'pct')}</td>
+      <td class="num">${cc !== null
+        ? `<span class="${cc > 0 ? 'cost-up' : ''}">${cc > 0 ? '+' : ''}${cc}%</span>${
+            Math.abs(cc) >= 50 ? `<span class="change-badge ${cc>0?'up':'down'}">${cc>0?'급증':'급감'}</span>` : ''}`
+        : '-'}</td>
     </tr>`;
   }).join('');
 }
 
 // ── AI Analysis ──
 async function runAIAnalysis() {
-  const s = getSettings();
-  const key = s.claudeKey;
-  if (!key) { alert('설정에서 Claude API Key를 입력해주세요.'); showSettings(); return; }
-
   const el = document.getElementById('aiResult');
-  el.innerHTML = '<div class="ai-loading"><div class="spinner"></div>AI가 광고 성과를 분석하고 있습니다...</div>';
+  el.innerHTML = '<div class="ai-loading"><div class="spinner"></div>AI가 광고 성과를 분석하고 전략을 수립하고 있습니다...</div>';
 
-  const kpi = DATA.kpi, pk = DATA.prevKpi;
-  const prompt = `네이버 검색광고 주간 성과 데이터를 분석하고 핵심 인사이트를 제공해주세요.
+  const k = DATA.kpi, pk = DATA.prevKpi;
+  const alertCamps = (DATA.alerts || []).filter(a => a.type === 'COST_SPIKE')
+    .sort((a,b) => b.pctChange - a.pctChange).slice(0, 10);
 
-이번주 (${DATA.period.since} ~ ${DATA.period.until}):
-- 노출: ${kpi.impCnt.toLocaleString()} / 클릭: ${kpi.clkCnt.toLocaleString()} / CTR: ${kpi.ctr}%
-- 광고비: ${kpi.salesAmt.toLocaleString()}원 / CPC: ${kpi.cpc.toLocaleString()}원
-- 전환수: ${kpi.ccnt} / 전환매출: ${kpi.convAmt.toLocaleString()}원 / ROAS: ${kpi.ror}%
-- 전환율: ${kpi.crto}% / 전환당비용: ${kpi.cpConv.toLocaleString()}원
+  const topCamps = (DATA.campaigns || [])
+    .filter(c => c.stats)
+    .sort((a,b) => (b.stats.salesAmt||0) - (a.stats.salesAmt||0))
+    .slice(0, 15)
+    .map(c => ({
+      name: c.name, type: c.type,
+      cost: c.stats.salesAmt, clicks: c.stats.clkCnt, conv: c.stats.ccnt,
+      roas: c.stats.ror, prevCost: c.prevStats?.salesAmt || 0,
+    }));
 
-전주 (${DATA.prevPeriod.since} ~ ${DATA.prevPeriod.until}):
-- 노출: ${pk.impCnt.toLocaleString()} / 클릭: ${pk.clkCnt.toLocaleString()} / CTR: ${pk.ctr}%
-- 광고비: ${pk.salesAmt.toLocaleString()}원 / CPC: ${pk.cpc.toLocaleString()}원
-- 전환수: ${pk.ccnt} / 전환매출: ${pk.convAmt.toLocaleString()}원 / ROAS: ${pk.ror}%
+  const prompt = `당신은 네이버 검색광고 전문 컨설턴트입니다. 포쿨(스타리온 냉장고 공식 판매채널)의 광고 성과를 분석하고 구체적인 전략을 제시해주세요.
 
-일별 추이:
-${DATA.daily.map(d => d.date + ': 광고비=' + d.salesAmt.toLocaleString() + ', 클릭=' + d.clkCnt + ', 전환=' + d.ccnt).join('\n')}
+## 분석 기간
+이번 기간: ${DATA.period.since} ~ ${DATA.period.until} (${DATA.period.days}일)
+비교 기간: ${DATA.prevPeriod.since} ~ ${DATA.prevPeriod.until}
+
+## 전체 KPI (이번 기간)
+- 노출: ${k.impCnt?.toLocaleString()} (이전: ${pk.impCnt?.toLocaleString()})
+- 클릭: ${k.clkCnt?.toLocaleString()} (이전: ${pk.clkCnt?.toLocaleString()})
+- CTR: ${k.ctr}% (이전: ${pk.ctr}%)
+- 광고비: ${k.salesAmt?.toLocaleString()}원 (이전: ${pk.salesAmt?.toLocaleString()}원)
+- 전환수: ${k.ccnt} (이전: ${pk.ccnt})
+- 전환매출: ${k.convAmt?.toLocaleString()}원 (이전: ${pk.convAmt?.toLocaleString()}원)
+- ROAS: ${k.ror}% (이전: ${pk.ror}%)
+- 전환율: ${k.crto}% / CPC: ${k.cpc?.toLocaleString()}원 / 전환당비용: ${k.cpConv?.toLocaleString()}원
+
+## 경고 현황
+${alertCamps.length > 0
+  ? alertCamps.map(a => `- ${a.campaignName}: 광고비 +${a.pctChange}% (${a.prevCost.toLocaleString()}→${a.currCost.toLocaleString()}원)`).join('\n')
+  : '- 광고비 급증 캠페인 없음'}
+
+## 광고비 상위 15개 캠페인
+${topCamps.map(c => `- ${c.name} [${c.type}]: 광고비=${c.cost?.toLocaleString()}원, 클릭=${c.clicks}, 전환=${c.conv}, ROAS=${c.roas}%, 이전광고비=${c.prevCost?.toLocaleString()}원`).join('\n')}
+
+${DATA.daily?.length > 0 ? `## 일별 추이\n${DATA.daily.map(d => `${d.date}: 광고비=${d.salesAmt?.toLocaleString()}, 클릭=${d.clkCnt}, 전환=${d.ccnt}`).join('\n')}` : ''}
 
 활성 캠페인: ${DATA.statsCollected}개 / 전체: ${DATA.totalCampaigns}개
-캠페인 타입: 쇼핑검색 87개, 파워링크 61개, 파워콘텐츠 9개, 브랜드검색 3개
 
-다음을 포함해서 분석해주세요:
-1. 핵심 성과 요약 (전주 대비 변화)
-2. 주목할 트렌드 (일별 패턴)
-3. 개선 제안 (구체적 액션)
-4. 주의 필요 사항
+## 분석 요청사항
+다음 형식으로 작성해주세요:
 
-한국어로, 마크다운 없이, 짧고 핵심만 작성해주세요.`;
+[성과 요약]
+이번 기간 핵심 성과를 3줄로 요약. 전기간 대비 변화를 수치로 명시.
+
+[경고 사항]
+광고비 급증 캠페인 분석. 왜 올랐는지 추정, 조치 필요 여부 판단.
+
+[효율 분석]
+ROAS, CTR, 전환율 기준으로 효율이 좋은/나쁜 캠페인 분석. 비효율 캠페인은 구체적 이름과 수치 명시.
+
+[다음 주 전략]
+1. 예산 조정: 어떤 캠페인의 예산을 올리고/줄일지 구체적으로
+2. 키워드 전략: CTR/전환율 기반 키워드 관리 방향
+3. 입찰가 전략: CPC와 전환당비용 기반 입찰가 조정 방향
+4. 위험 관리: 주의해야 할 캠페인과 대응 방안
+
+한국어로, 구체적 수치와 캠페인명을 포함하여 실행 가능한 전략을 작성해주세요.`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const workerUrl = getWorkerUrl();
+    const res = await fetch(workerUrl + '/api/ai', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1024,
-        messages: [{ role: 'user', content: prompt }]
-      })
+        max_tokens: 2048,
+        messages: [{ role: 'user', content: prompt }],
+      }),
     });
+
     const json = await res.json();
     if (json.content && json.content[0]) {
       el.innerHTML = formatAIResult(json.content[0].text);
+    } else if (json.error) {
+      el.innerHTML = `<div style="color:var(--red)">AI 분석 오류: ${json.error.message || json.error}</div>`;
     } else {
-      el.textContent = 'AI 분석 실패: ' + (json.error?.message || JSON.stringify(json));
+      el.innerHTML = `<div style="color:var(--red)">AI 응답 파싱 실패</div>`;
     }
   } catch (e) {
-    el.textContent = 'AI 연결 실패: ' + e.message;
+    el.innerHTML = `<div style="color:var(--red)">AI 연결 실패: ${e.message}<br>설정에서 Worker URL을 확인해주세요.</div>`;
   }
 }
 
 function formatAIResult(text) {
   return text
-    .replace(/(\d+\.\s*[^\n]+)/g, '<h4>$1</h4>')
+    .replace(/\[([^\]]+)\]/g, '<h4>$1</h4>')
+    .replace(/(\d+)\.\s/g, '<strong>$1.</strong> ')
     .replace(/\n/g, '<br>');
 }
 
 // ── Data Loading ──
-async function loadFromWorker() {
-  const s = getSettings();
-  if (!s.workerUrl) return null;
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-    const res = await fetch(s.workerUrl + '/api/dashboard', { signal: controller.signal });
-    clearTimeout(timeout);
-    if (!res.ok) return null;
-    return await res.json();
-  } catch { return null; }
-}
-
-async function refreshData() {
+async function loadData(since, until) {
+  showLoading(`${since} ~ ${until} 데이터 불러오는 중...`);
   document.getElementById('statusDot').style.background = 'var(--orange)';
   document.getElementById('statusText').textContent = '데이터 갱신 중...';
 
-  const live = await loadFromWorker();
-  if (live) {
-    DATA = live;
+  const workerUrl = getWorkerUrl();
+  try {
+    updateLoading(30, 'Worker에서 데이터 수집 중...');
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 120000); // 2분 타임아웃
+
+    const res = await fetch(
+      `${workerUrl}/api/dashboard?since=${since}&until=${until}`,
+      { signal: controller.signal }
+    );
+    clearTimeout(timeout);
+
+    updateLoading(80, '데이터 처리 중...');
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+
+    DATA = await res.json();
+    localStorage.setItem('pokool_dash_data', JSON.stringify(DATA));
+    document.getElementById('statusDot').style.background = 'var(--green)';
     document.getElementById('statusText').textContent = `실시간 · ${new Date().toLocaleTimeString('ko-KR')}`;
-  } else {
-    // Fall back to embedded + full campaign data from localStorage
+  } catch (e) {
+    // Fallback: try cached data
     const cached = localStorage.getItem('pokool_dash_data');
     if (cached) {
       DATA = JSON.parse(cached);
-      document.getElementById('statusText').textContent = `캐시 · ${DATA.generated?.slice(0, 16) || ''}`;
+      document.getElementById('statusDot').style.background = 'var(--orange)';
+      document.getElementById('statusText').textContent = `캐시 · ${e.message}`;
     } else {
-      DATA = EMBEDDED_DATA;
-      document.getElementById('statusText').textContent = `스냅샷 · ${DATA.generated?.slice(0, 16) || ''}`;
+      hideLoading();
+      document.getElementById('statusDot').style.background = 'var(--red)';
+      document.getElementById('statusText').textContent = `오류: ${e.message}`;
+      return;
     }
   }
 
-  document.getElementById('statusDot').style.background = 'var(--green)';
-  document.getElementById('periodBadge').textContent = `${DATA.period.since} ~ ${DATA.period.until}`;
+  updateLoading(90, '화면 렌더링 중...');
+  renderAll();
+  hideLoading();
+}
 
+function renderAll() {
+  if (!DATA) return;
+  updateDateInputs(DATA.period.since, DATA.period.until);
+  renderAlerts();
   renderKPI();
   renderChart();
   renderTable();
 }
 
+function loadCustomRange() {
+  const since = document.getElementById('dateSince').value;
+  const until = document.getElementById('dateUntil').value;
+  if (!since || !until) { alert('날짜를 선택해주세요.'); return; }
+  if (since > until) { alert('시작일이 종료일보다 클 수 없습니다.'); return; }
+  document.querySelectorAll('.date-preset').forEach(b => b.classList.remove('active'));
+  loadData(since, until);
+}
+
 // ── Event Listeners ──
+document.getElementById('datePresets').addEventListener('click', e => {
+  if (!e.target.dataset.days) return;
+  document.querySelectorAll('.date-preset').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  const days = parseInt(e.target.dataset.days);
+  loadData(fmtDateStr(days), fmtDateStr(1));
+});
+
 document.getElementById('chartTabs').addEventListener('click', e => {
   if (!e.target.dataset.metric) return;
   document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
@@ -572,6 +771,11 @@ document.getElementById('filterGroup').addEventListener('click', e => {
 
 document.getElementById('searchInput').addEventListener('input', () => renderTable());
 
+document.getElementById('alertOnlyToggle').addEventListener('change', e => {
+  alertOnly = e.target.checked;
+  renderTable();
+});
+
 document.addEventListener('click', e => {
   const th = e.target.closest('th[data-col]');
   if (!th) return;
@@ -586,28 +790,17 @@ document.getElementById('settingsModal').addEventListener('click', e => {
 });
 
 // ── Init ──
-// Inject full campaign data from JSON file if available
-async function injectFullData() {
-  try {
-    const res = await fetch('./dashboard_data.json');
-    if (res.ok) {
-      const full = await res.json();
-      localStorage.setItem('pokool_dash_data', JSON.stringify(full));
-      return full;
-    }
-  } catch {}
-  return null;
-}
-
 (async () => {
-  const full = await injectFullData();
-  if (full) {
-    DATA = full;
-  } else {
-    const cached = localStorage.getItem('pokool_dash_data');
-    DATA = cached ? JSON.parse(cached) : EMBEDDED_DATA;
+  // Try cached data first for instant render
+  const cached = localStorage.getItem('pokool_dash_data');
+  if (cached) {
+    DATA = JSON.parse(cached);
+    renderAll();
+    document.getElementById('statusDot').style.background = 'var(--orange)';
+    document.getElementById('statusText').textContent = `캐시 · ${DATA.generated?.slice(0,16) || ''}`;
   }
-  await refreshData();
+  // Then load fresh data
+  loadData(fmtDateStr(7), fmtDateStr(1));
 })();
 </script>
 </body>
