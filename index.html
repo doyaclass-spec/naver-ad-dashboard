@@ -231,8 +231,13 @@ let sortCol = 'salesAmt';
 let sortDir = -1; // desc
 
 // ── Settings ──
+const DEFAULT_WORKER_URL = 'https://pokool-ad-dashboard.pokool-ad.workers.dev';
 function getSettings() {
-  try { return JSON.parse(localStorage.getItem('pokool_dash_settings') || '{}'); } catch { return {}; }
+  try {
+    const s = JSON.parse(localStorage.getItem('pokool_dash_settings') || '{}');
+    if (!s.workerUrl) s.workerUrl = DEFAULT_WORKER_URL;
+    return s;
+  } catch { return { workerUrl: DEFAULT_WORKER_URL }; }
 }
 function showSettings() {
   const s = getSettings();
